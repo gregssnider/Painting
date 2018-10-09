@@ -1,41 +1,68 @@
-""" Munsell color space. """
-from typing import Tuple
+""" Munsell color space.
+
+The data file real_sRGB.ods is from https://www.rit.edu/science/pocs/renotation.
+This was converted to real_sRGB.csv for easier parsing by Python.
+
+The colour-science library does not appear to be reliable for this type of
+conversion (see https://stackoverflow.com/questions/3620663/
+color-theory-how-to-convert-munsell-hvc-to-rgb-hsb-hsl) so instead I do bilinear
+interpolation of the Munsell data from RIT.
+
+"""
+from typing import Tuple, Dict
+import math
+import numpy
 import colour
 
 
-def to_rgb(munsell: str) -> Tuple[int, int, int]:
-    """ Convert a Munsell color string to RGB. From:
-    https://stackoverflow.com/questions/3620663/
-    color-theory-how-to-convert-munsell-hvc-to-rgb-hsb-hsl
+def create_color_dict() -> Dict[Tuple[str, int, int], Tuple[int, int, int]]:
+    """ Create the dictionary mapping (hue, value, chroma) to (r, g, b). """
+    file = 'real_sRGB.csv'
+    dictionary = dict()
+    with open(file, 'r') as f:
+        lines = f.read().splitlines()
+        for i in range(1, len(lines)):
+            _, hue, value, chroma, *_, r, g, b = lines[i].split(',')
+            dictionary[(hue, value, chroma)] = (r, g, b)
+    return dictionary
+
+
+munsell_to_rgb = create_color_dict()
+
+
+def to_rgb(hue: str, value: int, chroma: float) -> Tuple[int, int, int]:
+    """ Convert a Munsell (hue, value, chroma) color spec to RGB using
+    linear interpolation
 
     Args:
-        munsell: Color definition, e.g. '4.2YR 8.1/5.3'
+        hue: E.g. "7.5YR"
+        value: Value from 1 (darkest) to 9 (lightest)
+        chroma: Value greater than zero (in principle unbounded).
 
     Returns:
-        RGB components, each an integer in the interval [0, 255]
+        RGB triple
     """
-    # The first step is to convert the *MRS* colour to *CIE xyY*
-    # colourspace.
-    xyY = colour.munsell_colour_to_xyY(munsell)
+    if value < 1 or value > 9:
+        raise ValueError('value must be in the interval [1, 9]')
 
-    # We then perform conversion to *CIE xyY* tristimulus values.
-    XYZ = colour.xyY_to_XYZ(xyY)
+    # Round chroma up and down to nearest multiple of 2.
+    bottom_chroma = math.floor(chroma)
+    if bottom_chroma % 2 == 1:
+        bottom_chroma -= 1
+    top_chroma = math.ceil(chroma)
+    if top_chroma % 2 == 1:
+        top_chroma += 1
+    if top_chroma == bottom_chroma:
+        return munsell_to_rgb[(hue, value, top_chroma)]
 
-    # The last step will involve using the *Munsell Renotation System*
-    # illuminant which is *CIE Illuminant C*:
-    #     http://nbviewer.ipython.org/github/colour-science/
-    #     colour-ipython/blob/master/notebooks/colorimetry/
-    #     illuminants.ipynb#CIE-Illuminant-C
-    # It is necessary in order to ensure white stays white when
-    # converting to *sRGB* colourspace and its different whitepoint
-    # (*CIE Standard Illuminant D65*) by performing chromatic
-    # adaptation between the two different illuminant.
-    C = colour.ILLUMINANTS['CIE 1931 2 Degree Standard Observer']['C']
-    srgb = colour.XYZ_to_sRGB(XYZ, C)
-    rgb = (int(round(255 * srgb[0])),
-           int(round(255 * srgb[1])),
-           int(round(255 * srgb[2])))
-    return rgb
+    # Linear interpolation
+    assert top_chroma - bottom_chroma == 2
+    bottom_rgb = munsell_to_rgb[(hue, value, bottom_chroma)]
+    top_rgb = munsell_to_rgb[(hue, value, top_chroma)]
+
+    bottom_
+    diff_rgb = tuple(numpy.subtract(top_rgb, bottom_rgb))
+
 
 
 def from_rgb(rgb: Tuple[int, int, int]) -> str:
@@ -55,7 +82,16 @@ def from_rgb(rgb: Tuple[int, int, int]) -> str:
 
 
 if __name__ == '__main__':
-    munsell = '4.2YR 8.1/5.3'
-    rgb = to_rgb(munsell)
+    munsell = '7.5YR 2/2'
+    rgb = to_rgb('7.5YR', 2, 2)
     recovered_munsell = from_rgb(rgb)
     print(munsell, '-->', rgb, '-->', recovered_munsell)
+
+    '''
+    hue = '5.0YR'
+    for value in (1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0):
+        for chroma in (1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0):
+            color = hue + ' ' + str(value) + '/' + str(chroma)
+            rgb = to_rgb(color)
+            print(color, '==>', rgb)
+    '''
