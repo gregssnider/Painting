@@ -21,11 +21,14 @@ if __name__ == '__main__':
     window.title(os.path.basename(filename))
 
     # Display image and color information of pixel pointed at by mouse
+    MAX_WIDTH = 1200
+    MAX_HEIGHT = 700
     raw_image = Image.open(filename)
+    raw_image.thumbnail((MAX_WIDTH, MAX_HEIGHT))
     img = ImageTk.PhotoImage(raw_image)
     panel = Label(window, image = img)
     location = StringVar()
-    location.set('hello there')
+    location.set('hue value chroma:')
     position = Label(window, textvar=location)
     panel.pack(side = "bottom", fill = "both", expand = "yes")
     position.pack(side = 'top', fill='both', expand='yes')
@@ -41,8 +44,9 @@ if __name__ == '__main__':
 
         # Display color info.
         rgb = raw_image.getpixel((x, y))
-        #color = munsell.from_rgb(rgb)
-        location.set(str((x, y)) + str(rgb))
+        hue, value, chroma = munsell.from_rgb(rgb)
+        location.set('hue value chroma:  ' +
+                     hue + '  ' + str(value) + '  ' + str(chroma))
 
     window.bind('<Motion>', motion)
     window.mainloop()
