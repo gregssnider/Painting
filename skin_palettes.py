@@ -62,8 +62,8 @@ PALETTE_WIDTH = PALETTE_COLUMNS * SWATCH_SIZE
 PALETTE_HEIGHT = PALETTE_ROWS * SWATCH_SIZE
 
 # Skin palette files.
-PALE_FILE = 'pale_skin_palette.jpg'
-DARK_FILE = 'dark_skin_palette.jpg'
+PALE_FILE = 'pale_skin_palette.png'
+DARK_FILE = 'dark_skin_palette.png'
 
 
 def paint_swatch(image: PhotoImage, row: int, column: int,
@@ -100,6 +100,6 @@ for scale in (pale_chroma, dark_chroma):
             column = value - 1
             rgb_color = munsell.to_rgb(hue, value, chroma)
             paint_swatch(img, row, column, rgb_color)
-    canvas.image.write(file)
+    canvas.image.write(file, format='png')
 
 mainloop()
