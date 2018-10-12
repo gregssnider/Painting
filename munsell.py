@@ -60,9 +60,9 @@ def create_color_dict() -> Dict[Tuple[str, int, int], Tuple[int, int, int]]:
     def average(rgb1: Tuple[int, int, int], rgb2: Tuple[int, int, int]) \
         -> Tuple[int, int, int]:
         """ Compute the average of two rgb tuples. """
-        r = (rgb1[0] + rgb2[0] + 0.5) // 2
-        g = (rgb1[1] + rgb2[1] + 0.5) // 2
-        b = (rgb1[2] + rgb2[2] + 0.5) // 2
+        r = int((rgb1[0] + rgb2[0] + 0.5) / 2)
+        g = int((rgb1[1] + rgb2[1] + 0.5) / 2)
+        b = int((rgb1[2] + rgb2[2] + 0.5) / 2)
         return r, g, b
 
     # Interpolate to create odd chroma values.
@@ -97,7 +97,7 @@ def from_rgb(rgb: Tuple[int, int, int]) -> (str, int, int):
     return min_color
 
 
-def to_rgb(hue: str, value: int, chroma: float) -> Tuple[int, int, int]:
+def to_rgb(hue: str, value: int, chroma: int) -> Tuple[int, int, int]:
     """ Convert a Munsell (hue, value, chroma) color spec to RGB using
     linear interpolation
 
@@ -109,7 +109,10 @@ def to_rgb(hue: str, value: int, chroma: float) -> Tuple[int, int, int]:
     Returns:
         RGB triple
     """
-    raise NotImplementedError('not done yet')
+    if chroma == 0:
+        return gray_rgb_values[value]
+    else:
+        return munsell_to_rgb[(hue, value, chroma)]
 
 
 
