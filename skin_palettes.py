@@ -88,17 +88,18 @@ img = PhotoImage(width=PALETTE_WIDTH, height=PALETTE_HEIGHT)
 canvas.create_image((PALETTE_WIDTH // 2, PALETTE_HEIGHT // 2), image=img, state='normal')
 canvas.image = img  # To prevent garbage collection
 
-for row in range(len(hues)):
-    hue = hues[row]
-    print('hue', hue)
-    for value in range(1, 10):
-        if row != PALETTE_ROWS - 1:
-            chroma = pale_chroma[value]
-        else:
-            chroma = 0
-        column = value - 1
-        rgb_color = munsell.to_rgb(hue, value, chroma)
-        paint_swatch(img, row, column, rgb_color)
-canvas.image.write(PALE_FILE)
+for scale in (pale_chroma, dark_chroma):
+    file = PALE_FILE if scale == pale_chroma else DARK_FILE
+    for row in range(len(hues)):
+        hue = hues[row]
+        for value in range(1, 10):
+            if row != PALETTE_ROWS - 1:
+                chroma = scale[value]
+            else:
+                chroma = 0
+            column = value - 1
+            rgb_color = munsell.to_rgb(hue, value, chroma)
+            paint_swatch(img, row, column, rgb_color)
+    canvas.image.write(file)
 
 mainloop()
