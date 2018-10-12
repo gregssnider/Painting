@@ -113,22 +113,3 @@ def to_rgb(hue: str, value: int, chroma: int) -> Tuple[int, int, int]:
         return gray_rgb_values[value]
     else:
         return munsell_to_rgb[(hue, value, chroma)]
-
-
-
-if __name__ == '__main__':
-    pass
-    '''
-    munsell = '7.5YR 2/2'
-    rgb = to_rgb('7.5YR', 2, 2)
-    recovered_munsell = from_rgb(rgb)
-    print(munsell, '-->', rgb, '-->', recovered_munsell)
-
-
-    hue = '5.0YR'
-    for value in (1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0):
-        for chroma in (1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0):
-            color = hue + ' ' + str(value) + '/' + str(chroma)
-            rgb = to_rgb(color)
-            print(color, '==>', rgb)
-    '''
