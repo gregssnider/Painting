@@ -51,7 +51,8 @@ pale_chroma = [0, 1, 1, 1, 2, 3, 4, 5, 3, 1, 0]
 dark_chroma = [0, 1, 2, 3, 4, 5, 3, 2, 1, 1, 0]
 
 # Hue variation: reddish, orangish, yellowish, grayscale (dummy hue)
-hues = ('10R', '5YR', '10YR', '2.5YR')
+# hues = ('10R', '5YR', '10YR', '2.5YR')      # Broader color palette
+hues = ('2.5YR', '5YR', '7.5YR', '2.5YR')   # Narrower color palette
 
 # Palette size. Top row used for reddish skin, middle row for orangish skin,
 # bottom row for yellowish skin, last row for grayscale.
