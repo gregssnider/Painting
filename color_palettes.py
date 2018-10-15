@@ -10,7 +10,7 @@ import munsell
 
 # Supported Munsell hues (half of the total), ordered clockwise.
 hues = ('5R', '10R', '5YR', '10YR', '5Y', '10Y', '5GY', '10GY', '5G', '10G',
-        '5GB', '10GB', '5B', '10B', '5PB', '10PB', '5P', '10P', '5RP', '10RP')
+        '5BG', '10BG', '5B', '10B', '5PB', '10PB', '5P', '10P', '5RP', '10RP')
 
 # Supported Munsell values.
 values = (9, 8, 7, 6, 5, 4, 3, 2, 1)
