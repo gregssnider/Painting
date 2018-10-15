@@ -63,8 +63,8 @@ PALETTE_WIDTH = PALETTE_COLUMNS * SWATCH_SIZE
 PALETTE_HEIGHT = PALETTE_ROWS * SWATCH_SIZE
 
 # Skin palette files.
-PALE_FILE = 'pale_skin_palette.png'
-DARK_FILE = 'dark_skin_palette.png'
+PALE_FILE = 'palettes/pale_skin_palette.png'
+DARK_FILE = 'palettes/dark_skin_palette.png'
 
 
 def paint_swatch(image: PhotoImage, row: int, column: int,

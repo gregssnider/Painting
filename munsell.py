@@ -107,9 +107,10 @@ def to_rgb(hue: str, value: int, chroma: int) -> Tuple[int, int, int]:
         chroma: Value greater than zero (in principle unbounded).
 
     Returns:
-        RGB triple
+        RGB triple, None if (hue, value, chroma) doesn't exist in the
+        RGB color space (RGB has limited chroma).
     """
     if chroma == 0:
         return gray_rgb_values[value]
     else:
-        return munsell_to_rgb[(hue, value, chroma)]
+        return munsell_to_rgb.get((hue, value, chroma))
