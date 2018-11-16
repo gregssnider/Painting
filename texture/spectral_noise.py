@@ -1,5 +1,12 @@
-""" Fourier approach to generating Perlin / Simplex noise for use as
-a universal texture. The base code is from:
+""" Spectral noise
+
+    Gaussian spectral noise
+    1/f noise
+    white noise
+    pink noise
+    brown noise
+
+The base code is from:
 https://www.reddit.com/r/proceduralgeneration/comments/5rood4/
 cubic_noise_a_simple_alternative_to_perlin_noise/
 
@@ -10,6 +17,7 @@ import math
 import imageio
 from PIL import Image
 from numpy.fft import fft2, ifft2, ifftshift, fftshift
+
 
 def noise(size: int, power=-1.0) -> np.ndarray:
     """ Generate 1 / f^power noise. """
@@ -24,10 +32,12 @@ def noise(size: int, power=-1.0) -> np.ndarray:
 
 
 def rgb2gray(rgb):
+    """ Convert an RGB color image to a grayscale image. """
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
 
 def gaussian2d(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
+    """ Construct a 2D Gaussian. """
     x, y = np.meshgrid(np.linspace(-1, 1, size), np.linspace(-1, 1, size))
     d = np.sqrt(x * x + y * y)
     g = np.exp(-((d - mu) ** 2 / (2.0 * sigma ** 2)))
@@ -35,6 +45,7 @@ def gaussian2d(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
 
 
 def gaussian_spectral_noise(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
+    """ Generate Gaussian spectral noise. """
     raw_spectrum = gaussian2d(size, sigma, mu)
     spectrum = ifftshift(raw_spectrum)
     spectrum[0, 0] = 0
@@ -42,27 +53,25 @@ def gaussian_spectral_noise(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
     return np.real(raw_spectrum)
 
 
+if __name__ == '__main__':
+    size = 1024
 
-size = 1024
+    plt.title('gaussian spectral noise')
+    plt.imshow(gaussian_spectral_noise(size, sigma=size/2), cmap='gray')
+    plt.show()
 
+    plt.title('1 / f noise')
+    plt.imshow(noise(size, power=-0.5), cmap='gray')  # 1/f noise
+    plt.show()
 
-plt.title('gaussian spectral noise')
-plt.imshow(gaussian_spectral_noise(size, sigma=size/2), cmap='gray')
-plt.show()
+    plt.title('white noise')
+    plt.imshow(noise(size, power=-1.0), cmap='gray')  # white noise
+    plt.show()
 
-plt.title('1 / f noise')
-plt.imshow(noise(size, power=-0.5), cmap='gray')  # 1/f noise
-plt.show()
+    plt.title('pink noise')
+    plt.imshow(noise(size, power=-1.5), cmap='gray')  # pink noise
+    plt.show()
 
-plt.title('white noise')
-plt.imshow(noise(size, power=-1.0), cmap='gray')  # white noise
-plt.show()
-
-plt.title('pink noise')
-plt.imshow(noise(size, power=-1.5), cmap='gray')  # pink noise
-plt.show()
-
-plt.title('brown noise')
-plt.imshow(noise(1024, power=-2.0), cmap='gray')  # brown noise
-plt.show()
-
+    plt.title('brown noise')
+    plt.imshow(noise(1024, power=-2.0), cmap='gray')  # brown noise
+    plt.show()
