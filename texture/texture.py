@@ -27,17 +27,6 @@ def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
 
-def show_spectrum(image: np.ndarray):
-    """ Display the Fourier spectrum of an image. """
-    assert len(image.shape) == 2, 'image must be 2D'
-    spectral = np.fft.fft2(image)
-    spectral[0, 0] = 0  # Kill DC component
-    spectrum = np.fft.fftshift(spectral)  # Shift DC to center
-    magnitude = np.log(np.abs(spectrum))
-    plt.imshow(magnitude, cmap='gray')
-    plt.show()
-
-
 def gaussian2d(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
     x, y = np.meshgrid(np.linspace(-1, 1, size), np.linspace(-1, 1, size))
     d = np.sqrt(x * x + y * y)
@@ -53,16 +42,6 @@ def gaussian_spectral_noise(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
     return np.real(raw_spectrum)
 
 
-
-filename = '../data/PerlinNoise.png'
-image = rgb2gray(np.asarray(Image.open(filename))[:, :])
-
-plt.title('multi-scale Perlin noise')
-plt.imshow(image, cmap='gray')
-plt.show()
-
-plt.title('multi-scale Perline spectrum')
-show_spectrum(image)
 
 size = 1024
 
