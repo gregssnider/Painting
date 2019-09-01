@@ -54,7 +54,7 @@ def gaussian_spectral_noise(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
 
 
 if __name__ == '__main__':
-    size = 1024
+    size = 2048
 
     plt.title('gaussian spectral noise')
     plt.imshow(gaussian_spectral_noise(size, sigma=size/2), cmap='gray')

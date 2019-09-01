@@ -16,8 +16,9 @@ hues = ('5R', '10R', '5YR', '10YR', '5Y', '10Y', '5GY', '10GY', '5G', '10G',
 values = (9, 8, 7, 6, 5, 4, 3, 2, 1)
 
 # Supported Munsell chromas, all even (not all of them exist for every hue).
-CHROMAS = 13
-chromas = range(2, 26, 2)
+CHROMAS = 26
+#chromas = range(2, 26, 2)
+chromas = range(1, CHROMAS, 1)
 
 # Palette size.
 PALETTE_ROWS = len(values)
