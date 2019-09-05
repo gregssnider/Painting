@@ -15,8 +15,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import imageio
-from PIL import Image
+import PIL
 from numpy.fft import fft2, ifft2, ifftshift, fftshift
+
+
+def save_image(tensor: np.ndarray, filename: str):
+    min = tensor.min()
+    max = tensor.max()
+    visual = ((tensor - min) / (max - min))
+    array = (visual * 255).astype(np.uint8)
+    image = PIL.Image.fromarray(array)
+    image.save(filename)
 
 
 def noise(size: int, power=-1.0) -> np.ndarray:
@@ -29,6 +38,18 @@ def noise(size: int, power=-1.0) -> np.ndarray:
         np.exp(2j * math.pi * np.random.rand(size, size)) *
         np.vectorize(f)(dist_sq)))
     return noise
+
+
+def color_noise(size: int, power=-1.0) -> np.ndarray:
+    """ Generate 1 / f^power noise, in color. """
+    r = noise(size, power)
+    g = noise(size, power)
+    b = noise(size, power)
+    image = np.ndarray((size, size, 3))
+    image[:, :, 0] = r
+    image[:, :, 1] = g
+    image[:, :, 2] = b
+    return image
 
 
 def rgb2gray(rgb):
@@ -55,23 +76,22 @@ def gaussian_spectral_noise(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
 
 if __name__ == '__main__':
     size = 2048
+    save_image(noise(size, power=-0.5), 'noise_1_over_f.jpg')
+    save_image(noise(size, power=-0.7), 'noise_0.7.jpg')
+    save_image(noise(size, power=-1.0), 'noise_white.jpg')
+    save_image(noise(size, power=-1.5), 'noise_pink.jpg')
+    save_image(noise(size, power=-2.0), 'noise_brown.jpg')
 
-    plt.title('gaussian spectral noise')
-    plt.imshow(gaussian_spectral_noise(size, sigma=size/2), cmap='gray')
-    plt.show()
+    save_image(color_noise(size, power=-0.5), 'noise_color_1_over_f.jpg')
+    save_image(color_noise(size, power=-0.7), 'noise_color_0.7.jpg')
+    save_image(color_noise(size, power=-1.0), 'noise_color_white.jpg')
+    save_image(color_noise(size, power=-1.5), 'noise_color_pink.jpg')
+    save_image(color_noise(size, power=-2.0), 'noise_color_brown.jpg')
 
-    plt.title('1 / f noise')
-    plt.imshow(noise(size, power=-0.5), cmap='gray')  # 1/f noise
-    plt.show()
-
-    plt.title('white noise')
-    plt.imshow(noise(size, power=-1.0), cmap='gray')  # white noise
-    plt.show()
-
-    plt.title('pink noise')
-    plt.imshow(noise(size, power=-1.5), cmap='gray')  # pink noise
-    plt.show()
-
+    '''
     plt.title('brown noise')
-    plt.imshow(noise(1024, power=-2.0), cmap='gray')  # brown noise
+    image = noise(1024, power=-2.0)
+    plt.imshow(image, cmap='gray')  # brown noise
     plt.show()
+    save_image(image, 'noise_brown.jpg')
+    '''

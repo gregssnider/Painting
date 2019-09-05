@@ -22,6 +22,23 @@ but we use only 1 through 9 for painting.
 
 Asian skin has a similar value/chroma scale.
 
+But according to this site, http://www.huevaluechroma.com/017.php, a better
+chroma curve for caucasian skin is the following, which has a linear drop-off
+from the brightest, full light color:
+
+    value   chroma     use
+      10      0
+      9       1
+      8       3     reflected light
+      7       5     brightest, full light (center light)
+      6       4     local color
+      5       4     half tone (this is in the light)
+      4       3     reflected light
+      3       3     core shadow
+      2       2
+      1       1
+      0       0
+
 Foxton says that Jamaican black skin is two values lower, so it would have
 the following curve:
 
@@ -48,7 +65,8 @@ from color import munsell
 
 # Chroma scales, indexed by Munsell value (0 through 10)
 #THESE HAVE BEEN REPLACED BY VALUES PICKED OFF A PHOTO
-pale_chroma = [0, 1, 2, 3, 3, 3, 3, 3, 2, 1, 0]
+#pale_chroma = [0, 1, 2, 3, 3, 3, 3, 3, 2, 1, 0]   # manual pick-off
+pale_chroma = [0, 1, 2, 3, 3, 4, 4, 5, 3, 1, 0]    # from color web site
 dark_chroma = [0, 1, 2, 3, 4, 5, 3, 2, 1, 1, 0]
 
 # Hue variation: reddish, orangish, yellowish, grayscale (dummy hue)
