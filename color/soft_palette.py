@@ -86,14 +86,16 @@ hue_layout = (
 values = (1, 3, 5, 7, 9)
 
 # Chroma curve for Munsell values 0 - 10. We linearly interpolate down from
-# peak chroma at value 7 to a chroma of 0 at values -1 and 10
+# peak chroma at value 7 to a chroma of 0 at values -1.5 and 11. This gives
+# a tiny bit of extra chroma on the bottom and top which looks nicer, even
+# though it may not quite be accurate physiologically. Sue me.
 peak_chroma = 3.0
 peak_value = 7
 chroma_curve = [peak_chroma for i in range(11)]
 for val in (0, 1, 2, 3, 4, 5, 6):
-    chroma_curve[val] = peak_chroma * ((val + 1) / peak_value)
+    chroma_curve[val] = peak_chroma * ((val + 1.5) / peak_value)
 for val in (8, 9, 10):
-    chroma_curve[val] = peak_chroma * ((11 - val) / peak_value)
+    chroma_curve[val] = peak_chroma * ((11.5 - val) / peak_value)
 
 # Palette size
 PALETTE_ROWS = 3
