@@ -34,6 +34,16 @@ gray_rgb_values = [
     (255, 255, 255)
 ]
 
+
+def average(rgb1: Tuple[int, int, int], rgb2: Tuple[int, int, int]) \
+        -> Tuple[int, int, int]:
+    """ Compute the average of two rgb tuples. """
+    r = int((rgb1[0] + rgb2[0] + 0.5) / 2)
+    g = int((rgb1[1] + rgb2[1] + 0.5) / 2)
+    b = int((rgb1[2] + rgb2[2] + 0.5) / 2)
+    return r, g, b
+
+
 def create_color_dict() -> Dict[Tuple[str, int, int], Tuple[int, int, int]]:
     """ Create the dictionary mapping (hue, value, chroma) to (r, g, b). """
     file = '../data/real_sRGB.csv'
@@ -56,14 +66,6 @@ def create_color_dict() -> Dict[Tuple[str, int, int], Tuple[int, int, int]]:
     for hue in hues:
         for value in range(11):
             dictionary[(hue, value, chroma)] = gray_rgb_values[value]
-
-    def average(rgb1: Tuple[int, int, int], rgb2: Tuple[int, int, int]) \
-        -> Tuple[int, int, int]:
-        """ Compute the average of two rgb tuples. """
-        r = int((rgb1[0] + rgb2[0] + 0.5) / 2)
-        g = int((rgb1[1] + rgb2[1] + 0.5) / 2)
-        b = int((rgb1[2] + rgb2[2] + 0.5) / 2)
-        return r, g, b
 
     # Interpolate to create odd chroma values.
     for (hue, value, chroma) in tuple(dictionary.keys()):
@@ -97,7 +99,7 @@ def from_rgb(rgb: Tuple[int, int, int]) -> (str, int, int):
     return min_color
 
 
-def to_rgb(hue: str, value: int, chroma: int) -> Tuple[int, int, int]:
+def to_rgb(hue: str, value: int, chroma: float) -> Tuple[int, int, int]:
     """ Convert a Munsell (hue, value, chroma) color spec to RGB using
     linear interpolation
 
@@ -113,4 +115,11 @@ def to_rgb(hue: str, value: int, chroma: int) -> Tuple[int, int, int]:
     if chroma == 0:
         return gray_rgb_values[value]
     else:
-        return munsell_to_rgb.get((hue, value, chroma))
+        # Since our munsell_to_rgb map is indexed by integers but our chroma
+        # is is float, interpolate.
+        low_chroma = math.floor(chroma)
+        high_chroma = math.ceil(chroma)
+        low_rgb = munsell_to_rgb.get((hue, value, low_chroma))
+        high_rgb = munsell_to_rgb.get((hue, value, high_chroma))
+        rgb = average(low_rgb, high_rgb)
+        return rgb
