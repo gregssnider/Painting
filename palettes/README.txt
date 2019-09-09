@@ -18,3 +18,13 @@ For dark skin, use the dark skin palette with the following values:
     3  half tone (part of the light)
     2  reflected light (in the shadow)
     1  core shadow
+
+
+For a simpler painting model, use these values for Caucasian skin (values on the
+11 tone Munsell scale):
+
+    9  highlight
+    7  local color
+    5  half tone (part of the light)
+    3  reflected light (in the shadow)
+    1  core shadow
