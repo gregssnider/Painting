@@ -120,6 +120,12 @@ def to_rgb(hue: str, value: int, chroma: float) -> Tuple[int, int, int]:
         low_chroma = math.floor(chroma)
         high_chroma = math.ceil(chroma)
         low_rgb = munsell_to_rgb.get((hue, value, low_chroma))
+        while low_rgb is None:
+            # Outside the RGB gamut, so truncate.
+            low_chroma -= 1
+            low_rgb =  munsell_to_rgb.get((hue, value, low_chroma))
         high_rgb = munsell_to_rgb.get((hue, value, high_chroma))
+        if high_rgb is None:
+            high_rgb = low_rgb   # Overflowing Munsell space, truncate.
         rgb = average(low_rgb, high_rgb)
         return rgb
