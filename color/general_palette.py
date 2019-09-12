@@ -106,9 +106,11 @@ def adjust_chroma(value: int, peak_chroma: int, peak_value) -> float:
     if value == peak_value:
         return peak_chroma
     elif value < peak_value:
-        return peak_chroma * ((value + 1.5) / peak_value)
+        slope = peak_chroma / (peak_value + 1.0)
+        return peak_chroma - slope * (peak_value - value)
     else:
-        return peak_chroma * ((11.5 - value) / peak_value)
+        slope = peak_chroma / (peak_value - 10.0)
+        return peak_chroma - slope * (peak_value - value)
 
 
 # Palette size
