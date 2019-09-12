@@ -103,20 +103,18 @@ gray = '10R'   # Dummy hue for grayscale.
 hues = (
     # Soft section
     '5RP', '5R', '5YR', '5Y', '5GY', '5G', '5BG', '5B', '5PB', '5P', gray,
-    # Warm section, centered on red-purple (closer to red than 5R)
-    '5P', '5RP', '5R', gray,
+    # Warm section, centered on red
+    '5RP', '5R', '5YR'
     # Cool section, centered on blue
-    '5BG', '5B', '5PB'
+    #'5BG', '5B', '5PB'
 )
 
 # Peak chromas, ordered from top to bottom by row.
 peak_chromas = (
     # Soft section
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0,
-    # Warm section, centered on red
-    6, 9, 6, 0,
-    # Cool section, centered on blue
-    6, 9, 6
+    # High chroma section, centered on red
+    10, 16, 10
 )
 assert len(peak_chromas) == len(hues)
 
