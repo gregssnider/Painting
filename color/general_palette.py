@@ -146,8 +146,10 @@ def adjust_chroma(value: int, peak_chroma: int) -> float:
 PALETTE_ROWS = len(hues)
 PALETTE_COLUMNS = len(values)
 SWATCH_SIZE = 50
-PALETTE_WIDTH = PALETTE_COLUMNS * SWATCH_SIZE
-PALETTE_HEIGHT = PALETTE_ROWS * SWATCH_SIZE
+GAP = 5  # Column gap between darks and lights
+GAP_COLUMN = 5
+PALETTE_WIDTH = PALETTE_COLUMNS * SWATCH_SIZE + GAP
+PALETTE_HEIGHT = PALETTE_ROWS * SWATCH_SIZE + GAP
 
 
 def paint_swatch(image: PhotoImage, row: int, column: int,
@@ -158,6 +160,8 @@ def paint_swatch(image: PhotoImage, row: int, column: int,
     if row < 0 or row >= PALETTE_ROWS:
         raise ValueError('bad row')
     x_start = column * SWATCH_SIZE
+    if column >= GAP_COLUMN:
+        x_start += GAP
     y_start = row * SWATCH_SIZE
     for x in range(x_start, x_start + SWATCH_SIZE - 1):
         for y in range(y_start, y_start + SWATCH_SIZE - 1):
