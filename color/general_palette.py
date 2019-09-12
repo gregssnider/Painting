@@ -9,9 +9,8 @@ Hues:
     hues.
 
 Values:
-    Only 5 from the Munsell scale: 1, 3, 5, 7, 9. Note that Munsell uses an
-    11 value scale, from 0 to 10, so that the values 1 and 9 are not pure black
-    or pure white, respectively.
+    9 from the Munsell scale: 1, 2, 3, 4, 5, 6, 7, 8, 9. Note that Munsell uses
+    an 11 value scale, where 0 is black and 10 is white
 
 Chroma:
     Peak chroma is assigned to value 7, declining linearly to values 1 and 9.
@@ -20,79 +19,49 @@ Chroma:
     peak chroma near the value of 5. Chroma can be toned down on the fly by
     blending in the appropriate value of gray.
 
-    Here's the map for a peak chroma value of 4. This map is sometimes called
-    the "chroma curve" for an object with a local color of chroma 4 at value 7:
+    Here's an approximate map for a peak chroma value of 4. This map is
+    sometimes called the "chroma curve" for an object with a local color of
+    chroma 4 at value 7:
 
          value     chroma
          -----     ------
            9          1
+           8          2.5
            7          4
+           6          3.5
            5          3
+           4          2.5
            3          2
+           2          1.5
            1          1
 
-The swatches are broken into 3 sections: soft, warm, cool
+The swatches are broken into 2 rows of low chroma colors, and one row of
+grayscale + high chroma colors. The high chroma colors are centered on red,
+mimicking the Zorn palette.
 
-Soft swatches, max chroma = 3:
+Palette layout:
 
-         1    3    5    7    9    <-- Value
-      +----+----+----+----+----+
-      |           5RP          |
-      +----+----+----+----+----+
-      |           5R           |        ^
-      +----+----+----+----+----+        |
-      |           5YR          |       Hue
-      +----+----+----+----+----+        |
-      |           5Y           |        V
-      +----+----+----+----+----+
-      |           5GY          |
-      +----+----+----+----+----+
-      |           5G           |
-      +----+----+----+----+----+
-      |           5BG          |
-      +----+----+----+----+----+
-      |           5B           |
-      +----+----+----+----+----+
-      |           5PB          |
-      +----+----+----+----+----+
-      |           5P           |
-      +----+----+----+----+----+
-      |        grayscale       |
-      +----+----+----+----+----+
+      +-------------+-------------+-------------+-------------+-------------+
+      |     5RP     |     5R      |     5YR     |     5Y      |     5GY     |
+      +-------------+-------------+-------------+-------------+-------------+
+      |     5G      |     5GB     |     5B      |     5PB     |     5P      |
+      +-------------+-------------+-------------+-------------+-------------+
+      |  grayscale  |             |   hot 5RP   |   hot 5R    |   hot 5YR   |
+      +-------------+-------------+-------------+-------------+-------------+
 
-In addition to those soft colors, you add either hot swatches or cool swatches
-(but not both) to form a harmonious palette. We use red rather than orange
-as the peak of the gamut for one reason: lipstick.
+Within each color, values are arranged from 1 to 9:
 
-Hot swatches, added for a hot gamut:
-
-         1    3    5    7    9      max chroma
-      +----+----+----+----+----+
-      |           5P           |        6
-      +----+----+----+----+----+
-      |           5RP          |        9
-      +----+----+----+----+----+
-      |           5R           |        6
-      +----+----+----+----+----+
-      |         grayscale      |        0   A spacer
-      +----+----+----+----+----+
-
-Cool swatches, added for a cool gamut:
-
-         1    3    5    7    9      max chroma
-      +----+----+----+----+----+
-      |           5BG          |        6
-      +----+----+----+----+----+
-      |           5B           |        9
-      +----+----+----+----+----+
-      |           5PB          |        6
-      +----+----+----+----+----+
+         1    2    3    4    5    6    7    8    9    <-- value
+      +----+----+----+----+----+----+----+----+----+
+      |           5G  (example color)              |
+      +----+----+----+----+----+----+----+----+----+
 
 
 """
 from typing import Tuple
 from tkinter import Tk, Canvas, PhotoImage, mainloop
 from color import munsell
+import sys
 
 
 # Output palette file
@@ -101,29 +70,31 @@ file = '../palettes/general_palette.png'
 # Hues, ordered from top to bottom by row.
 gray = '10R'   # Dummy hue for grayscale.
 hues = (
-    # Soft section
-    '5RP', '5R', '5YR', '5Y', '5GY', '5G', '5BG', '5B', '5PB', '5P', gray,
-    # Warm section, centered on red
-    '5RP', '5R', '5YR'
-    # Cool section, centered on blue
-    #'5BG', '5B', '5PB'
+    ('5RP', '5R', '5YR', '5Y', '5GY'),  # row 1: warm colors
+    ('5G', '5BG', '5B', '5PB', '5P'),   # row 2: cool colors
+    (gray, '5RP', '5R', '5YR', '5Y')    # row 3: grayscale + hot colors
 )
 
 # Peak chromas, ordered from top to bottom by row.
 peak_chromas = (
-    # Soft section
-    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0,
-    # High chroma section, centered on red
-    10, 16, 10
+    (3, 3, 3, 3, 3),      # row 1
+    (3, 3, 3, 3, 3),      # row 2
+    (0, 16, 16, 16, 16)   # row 3
 )
-assert len(peak_chromas) == len(hues)
+
+# Values for each color where chroma peaks. We peak the soft warm and cool
+# colors at value 7, and the hot colors at value 5.
+peak_values = (
+    (7, 7, 7, 7, 7),      # row 1
+    (7, 7, 7, 7, 7),      # row 2
+    (9, 5, 5, 5, 5)       # row 3
+)
 
 # Values, ordered left to right by column.
 values = (1, 2, 3, 4, 5, 6, 7, 8, 9)
-#values = (1, 3, 5, 7, 9)
 
 
-def adjust_chroma(value: int, peak_chroma: int) -> float:
+def adjust_chroma(value: int, peak_chroma: int, peak_value) -> float:
     """ Adjust the chroma to match the chroma curve.
 
     We linearly interpolate down from peak chroma at value 7 to a chroma of 0
@@ -131,7 +102,7 @@ def adjust_chroma(value: int, peak_chroma: int) -> float:
     and top which looks nicer, even though it may not be quite accurate
     physiologically. Hey, this is art.
     """
-    peak_value = 7
+    assert 1 <= value <= 9
     if value == peak_value:
         return peak_chroma
     elif value < peak_value:
@@ -141,13 +112,16 @@ def adjust_chroma(value: int, peak_chroma: int) -> float:
 
 
 # Palette size
-PALETTE_ROWS = len(hues)
-PALETTE_COLUMNS = len(values)
+# Organized
+COLOR_ROWS = 3
+COLOR_COLUMNS = 5
+PALETTE_ROWS = COLOR_ROWS
+PALETTE_COLUMNS = COLOR_COLUMNS * len(values)
 SWATCH_SIZE = 50
-GAP = 5  # Column gap between darks and lights
-GAP_COLUMN = 5
-PALETTE_WIDTH = PALETTE_COLUMNS * SWATCH_SIZE + GAP
-PALETTE_HEIGHT = PALETTE_ROWS * SWATCH_SIZE + GAP
+#GAP = 3  # Column gap between darks and lights
+#GAP_COLUMN = 5
+PALETTE_WIDTH = PALETTE_COLUMNS * SWATCH_SIZE
+PALETTE_HEIGHT = PALETTE_ROWS * SWATCH_SIZE
 
 
 def paint_swatch(image: PhotoImage, row: int, column: int,
@@ -158,8 +132,8 @@ def paint_swatch(image: PhotoImage, row: int, column: int,
     if row < 0 or row >= PALETTE_ROWS:
         raise ValueError('bad row')
     x_start = column * SWATCH_SIZE
-    if column >= GAP_COLUMN:
-        x_start += GAP
+    #if column >= GAP_COLUMN:
+    #    x_start += GAP
     y_start = row * SWATCH_SIZE
     for x in range(x_start, x_start + SWATCH_SIZE - 1):
         for y in range(y_start, y_start + SWATCH_SIZE - 1):
@@ -179,18 +153,24 @@ canvas.image = img  # To prevent garbage collection
 
 # Paint palette background black
 img.put("{black}", (0, 0, PALETTE_WIDTH, PALETTE_HEIGHT))
-for row in range(PALETTE_ROWS):
-    hue = hues[row]
-    for col in range(PALETTE_COLUMNS):
-        value = values[col]
-        chroma = adjust_chroma(value, peak_chromas[row])
-        print('hue value chroma', hue, value, chroma)
-        rgb_color = munsell.to_rgb(hue, value, chroma)
-        if rgb_color is not None:
-            paint_swatch(img, row, col, rgb_color)
-        else:
-            print('missing rgb_color!!!')
+
+for color_row in range(COLOR_ROWS):
+    for color_col in range(COLOR_COLUMNS):
+        hue = hues[color_row][color_col]
+        peak_value = peak_values[color_row][color_col]
+        peak_chroma = peak_chromas[color_row][color_col]
+        for index, value in enumerate(values):
+            chroma = adjust_chroma(value, peak_chroma, peak_value)
+            print('hue', hue, 'value', value, 'chroma', chroma,
+                  'peak value', peak_value)
+            rgb_color = munsell.to_rgb(hue, value, chroma)
+            palette_col = color_col * len(values) + index
+            if rgb_color is not None:
+                paint_swatch(img, color_row, palette_col, rgb_color)
+            else:
+                print('missing rgb_color!!!')
 canvas.image.write(file, format='png')
 print('done.')
+sys.exit(0)
 
 mainloop()
