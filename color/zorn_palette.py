@@ -1,4 +1,7 @@
-""" A low-chroma palette extended with high-chroma warms (red) and cools (blue).
+""" A low-chroma Zorn-like palette.
+
+It has been extended with low-chroma blues, but generally follows Zorn's
+approach to color, including some high-chroma reds.
 
 By keeping the chroma low, color harmony is ensured. Extending this on the fly
 to create a more colorful palette (e.g. by boosting the chroma of red) is easy.
@@ -65,7 +68,7 @@ import sys
 
 
 # Output palette file
-file = '../palettes/general_palette.png'
+file = '../palettes/zorn_palette.png'
 
 # Hues, ordered from top to bottom by row.
 gray = '10R'   # Dummy hue for grayscale.
