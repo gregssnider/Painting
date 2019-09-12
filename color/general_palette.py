@@ -95,6 +95,9 @@ from tkinter import Tk, Canvas, PhotoImage, mainloop
 from color import munsell
 
 
+# Output palette file
+file = '../palettes/general_palette.png'
+
 # Hues, ordered from top to bottom by row.
 gray = '10R'   # Dummy hue for grayscale.
 hues = (
@@ -118,7 +121,8 @@ peak_chromas = (
 assert len(peak_chromas) == len(hues)
 
 # Values, ordered left to right by column.
-values = (1, 3, 5, 7, 9)
+values = (1, 2, 3, 4, 5, 6, 7, 8, 9)
+#values = (1, 3, 5, 7, 9)
 
 
 def adjust_chroma(value: int, peak_chroma: int) -> float:
@@ -165,7 +169,6 @@ window.title('General Palette')
 canvas = Canvas(window, width=PALETTE_WIDTH, height=PALETTE_HEIGHT, bg='#000000')
 canvas.pack()
 
-file = '../palettes/general_palette.png'
 print('creating', file)
 img = PhotoImage(width=PALETTE_WIDTH, height=PALETTE_HEIGHT)
 canvas.create_image((PALETTE_WIDTH // 2, PALETTE_HEIGHT // 2), image=img,
@@ -175,7 +178,7 @@ canvas.image = img  # To prevent garbage collection
 for row in range(PALETTE_ROWS):
     hue = hues[row]
     for col in range(PALETTE_COLUMNS):
-        value = 2 * col + 1
+        value = values[col]
         chroma = adjust_chroma(value, peak_chromas[row])
         print('hue value chroma', hue, value, chroma)
         rgb_color = munsell.to_rgb(hue, value, chroma)
