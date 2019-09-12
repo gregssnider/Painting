@@ -175,6 +175,8 @@ canvas.create_image((PALETTE_WIDTH // 2, PALETTE_HEIGHT // 2), image=img,
                     state='normal')
 canvas.image = img  # To prevent garbage collection
 
+# Paint palette background black
+img.put("{black}", (0, 0, PALETTE_WIDTH, PALETTE_HEIGHT))
 for row in range(PALETTE_ROWS):
     hue = hues[row]
     for col in range(PALETTE_COLUMNS):
