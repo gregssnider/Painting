@@ -46,7 +46,7 @@ def average(rgb1: Tuple[int, int, int], rgb2: Tuple[int, int, int]) \
 
 def create_color_dict() -> Dict[Tuple[str, int, int], Tuple[int, int, int]]:
     """ Create the dictionary mapping (hue, value, chroma) to (r, g, b). """
-    file = '../data/real_sRGB.csv'
+    file = 'real_sRGB.csv'
     dictionary = dict()
     hues = set()
     with open(file, 'r') as f:
