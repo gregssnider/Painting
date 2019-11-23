@@ -129,3 +129,25 @@ def to_rgb(hue: str, value: int, chroma: float) -> Tuple[int, int, int]:
             high_rgb = low_rgb   # Overflowing Munsell space, truncate.
         rgb = average(low_rgb, high_rgb)
         return rgb
+
+
+def write_munsell_to_rgb_csv_file():
+    filename = 'munsell_to_rgb.csv'
+    with open(filename, 'w') as f:
+        f.write("hue,value,chroma,r,g,b\n")
+        for key in munsell_to_rgb:
+            hue = key[0]
+            value = key[1]
+            chroma = key[2]
+            rgb = munsell_to_rgb[key]
+            r = rgb[0]
+            b = rgb[1]
+            g = rgb[2]
+            line = (hue + ',' + str(value) + ',' + str(chroma) + ','
+                    + str(r) + ',' + str(g) + ',' + str(b) + '\n')
+            f.write(line)
+    print('file', filename, 'written')
+
+
+if __name__ == '__main__':
+    write_munsell_to_rgb_csv_file()

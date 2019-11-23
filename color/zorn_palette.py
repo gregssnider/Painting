@@ -123,8 +123,8 @@ COLOR_COLUMNS = 5
 PALETTE_ROWS = COLOR_ROWS
 PALETTE_COLUMNS = COLOR_COLUMNS * len(values)
 SWATCH_SIZE = 50
-#GAP = 3  # Column gap between darks and lights
-#GAP_COLUMN = 5
+GAP = 3  # Column gap between darks and lights
+GAP_COLUMN = 5
 PALETTE_WIDTH = PALETTE_COLUMNS * SWATCH_SIZE
 PALETTE_HEIGHT = PALETTE_ROWS * SWATCH_SIZE
 
@@ -136,9 +136,14 @@ def paint_swatch(image: PhotoImage, row: int, column: int,
         raise ValueError('bad column')
     if row < 0 or row >= PALETTE_ROWS:
         raise ValueError('bad row')
+
+    # Put a slight gap between values 5 and 6 for each color to make it easier
+    # to pick of the right value from the palette.
     x_start = column * SWATCH_SIZE
     #if column >= GAP_COLUMN:
     #    x_start += GAP
+
+
     y_start = row * SWATCH_SIZE
     for x in range(x_start, x_start + SWATCH_SIZE - 1):
         for y in range(y_start, y_start + SWATCH_SIZE - 1):
