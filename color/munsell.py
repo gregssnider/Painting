@@ -141,8 +141,8 @@ def write_munsell_to_rgb_csv_file():
             chroma = key[2]
             rgb = munsell_to_rgb[key]
             r = rgb[0]
-            b = rgb[1]
-            g = rgb[2]
+            g = rgb[1]
+            b = rgb[2]
             line = (hue + ',' + str(value) + ',' + str(chroma) + ','
                     + str(r) + ',' + str(g) + ',' + str(b) + '\n')
             f.write(line)
