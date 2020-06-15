@@ -45,7 +45,10 @@ if __name__ == '__main__':
         rgb = raw_image.getpixel((x, y))
         hue, value, chroma = munsell.from_rgb(rgb)
         location.set('hue value chroma:  ' +
-                     hue + '  ' + str(value) + '  ' + str(chroma))
+                     hue + '  ' + str(value) + '  ' + str(chroma) +
+                     '   rgb:  ' +
+                     str(rgb[0]) + ' ' + str(rgb[1]) + ' ' + str(rgb[2])
+                     )
 
     window.bind('<Motion>', motion)
     window.mainloop()
