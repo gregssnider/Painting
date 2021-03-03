@@ -75,8 +75,9 @@ def gaussian_spectral_noise(size: int, sigma=1.0, mu=0.0) -> np.ndarray:
 
 
 if __name__ == '__main__':
-    size = 2048
+    size = 4096
     save_image(noise(size, power=-0.5), 'noise_1_over_f.jpg')
+    '''
     save_image(noise(size, power=-0.7), 'noise_0.7.jpg')
     save_image(noise(size, power=-1.0), 'noise_white.jpg')
     save_image(noise(size, power=-1.5), 'noise_pink.jpg')
@@ -87,6 +88,7 @@ if __name__ == '__main__':
     save_image(color_noise(size, power=-1.0), 'noise_color_white.jpg')
     save_image(color_noise(size, power=-1.5), 'noise_color_pink.jpg')
     save_image(color_noise(size, power=-2.0), 'noise_color_brown.jpg')
+    '''
 
     '''
     plt.title('brown noise')
